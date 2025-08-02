@@ -40,7 +40,7 @@ The extension comes pre-configured with protection against common phishing patte
 - Character substitution: `z00m`, `g00gle`, `amaz0n`, `micr0soft`
 - Typosquatting: `zooom`, `amazzon`, `googl`
 - Unicode attacks: `zоom` (Cyrillic), `gоogle`, `amazоn`
-- Suspicious indicators: URLs with `@`, `//`, `httpss`
+- Suspicious indicators: URLs with `@`, `httpss`
 
 ### Whitelisted Domains
 - `zoom.us`, `zoom.com`
@@ -74,7 +74,8 @@ urlblock/
 ├── warning.html          # Blocked site warning page
 ├── warning.js            # Warning page functionality
 ├── popup.html            # Settings interface
-└── popup.js              # Settings functionality
+├── popup.js              # Settings functionality
+└── defaults.js           # Default blacklist and whitelist patterns
 ```
 
 ## Technical Details
