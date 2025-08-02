@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "URL Filter",
+  "name": "URL Block - Phishing Protection",
   "version": "1.0.0",
-  "description": "Filter URLs based on blacklist and whitelist patterns",
+  "description": "Smart URL filtering extension that protects against phishing sites with customizable blacklists and whitelists",
   "permissions": [
     "activeTab",
     "storage",
@@ -18,7 +18,7 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "URL Filter Settings"
+    "default_title": "URL Block Settings"
   },
   "options_page": "popup.html",
   "content_scripts": [
