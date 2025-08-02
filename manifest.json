@@ -3,6 +3,11 @@
   "name": "URL Block - Phishing Protection",
   "version": "1.0.0",
   "description": "Smart URL filtering extension that protects against phishing sites with customizable blacklists and whitelists",
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png", 
+    "128": "icon-128.png"
+  },
   "permissions": [
     "activeTab",
     "storage",
