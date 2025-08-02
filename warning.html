@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Site Blocked - URL Filter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 500px;
+    }
+    .icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #d32f2f;
+      margin-bottom: 20px;
+    }
+    .blocked-url {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      word-break: break-all;
+      margin: 20px 0;
+    }
+    button {
+      background: #4285f4;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px;
+    }
+    button:hover {
+      background: #3367d6;
+    }
+    .danger {
+      background: #d32f2f;
+    }
+    .danger:hover {
+      background: #b71c1c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">🚫</div>
+    <h1>Site Blocked</h1>
+    <p>This website has been blocked by your URL filter settings.</p>
+    
+    <div class="blocked-url" id="blocked-url"></div>
+    
+    <p>This site matches a pattern in your blacklist and is not in your whitelist.</p>
+    
+    <button id="go-back-btn">Go Back</button>
+    <button id="open-settings-btn">Open Settings</button>
+    <button id="proceed-anyway-btn" class="danger">Proceed Anyway</button>
+  </div>
+  
+  <script src="warning.js"></script>
+</body>
+</html>
