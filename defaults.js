@@ -59,7 +59,20 @@ if (typeof module !== 'undefined' && module.exports) {
   // Node.js environment
   module.exports = { DEFAULT_BLACKLIST, DEFAULT_WHITELIST };
 } else {
-  // Browser environment - make available globally
-  window.DEFAULT_BLACKLIST = DEFAULT_BLACKLIST;
-  window.DEFAULT_WHITELIST = DEFAULT_WHITELIST;
+  // Browser/Service worker environment - use globalThis which works everywhere
+  try {
+    globalThis.DEFAULT_BLACKLIST = DEFAULT_BLACKLIST;
+    globalThis.DEFAULT_WHITELIST = DEFAULT_WHITELIST;
+    // Also set on window if it exists (for content scripts)
+    if (typeof window !== 'undefined' && window) {
+      window.DEFAULT_BLACKLIST = DEFAULT_BLACKLIST;
+      window.DEFAULT_WHITELIST = DEFAULT_WHITELIST;
+    }
+  } catch (e) {
+    // Fallback if globalThis doesn't work
+    if (typeof self !== 'undefined') {
+      self.DEFAULT_BLACKLIST = DEFAULT_BLACKLIST;
+      self.DEFAULT_WHITELIST = DEFAULT_WHITELIST;
+    }
+  }
 }

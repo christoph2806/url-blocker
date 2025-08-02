@@ -75,6 +75,18 @@ function matchesAnyPattern(url, patterns) {
   });
 }
 
+// Normalize URL for consistent comparison
+function normalizeURL(url) {
+  try {
+    const urlObj = new URL(url);
+    // Remove trailing slash, fragments, and query params for consistent matching
+    return urlObj.origin + urlObj.pathname.replace(/\/$/, '');
+  } catch (error) {
+    // If URL parsing fails, return original
+    return url;
+  }
+}
+
 // Temporary whitelist management
 async function addToTemporaryWhitelist(url) {
   const TEMP_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
@@ -83,13 +95,16 @@ async function addToTemporaryWhitelist(url) {
   const result = await chrome.storage.local.get(['tempWhitelist']);
   const tempWhitelist = result.tempWhitelist || {};
   
-  tempWhitelist[url] = expiration;
+  const normalizedURL = normalizeURL(url);
+  tempWhitelist[normalizedURL] = expiration;
   await chrome.storage.local.set({ tempWhitelist });
 }
 
 async function isInTemporaryWhitelist(url) {
   const result = await chrome.storage.local.get(['tempWhitelist']);
   const tempWhitelist = result.tempWhitelist || {};
+  
+  const normalizedURL = normalizeURL(url);
   
   // Clean up expired entries
   const now = Date.now();
@@ -107,7 +122,7 @@ async function isInTemporaryWhitelist(url) {
   }
   
   // Check if URL is in temporary whitelist
-  return tempWhitelist[url] && now < tempWhitelist[url];
+  return tempWhitelist[normalizedURL] && now < tempWhitelist[normalizedURL];
 }
 
 async function getTemporaryWhitelist() {
@@ -160,49 +175,58 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     checkURL(request.url).then(sendResponse);
     return true; // Keep message channel open for async response
   } else if (request.action === 'navigateBack') {
-    // Navigate back or to new tab
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      if (tabs[0]) {
-        // Try to inject script to go back, fallback to new tab if it fails
-        chrome.scripting.executeScript({
-          target: {tabId: tabs[0].id},
-          func: () => {
-            if (window.history.length > 1) {
-              window.history.back();
-            } else {
-              // If no history, signal to go to new tab
-              return false;
-            }
-            return true;
-          }
-        }).then((results) => {
-          // If the script returned false or failed, navigate to new tab
-          if (!results || !results[0] || !results[0].result) {
-            chrome.tabs.update(tabs[0].id, {url: 'chrome://newtab/'});
-          }
-        }).catch(() => {
-          // If script injection fails, navigate to new tab
-          chrome.tabs.update(tabs[0].id, {url: 'chrome://newtab/'});
-        });
-      }
-    });
+    handleNavigateBack();
+    return false;
   } else if (request.action === 'openSettings') {
     // Open extension options page
     chrome.runtime.openOptionsPage();
+    return false;
   } else if (request.action === 'proceedToURL') {
-    // Add URL to temporary whitelist and navigate
-    if (request.url) {
-      await addToTemporaryWhitelist(request.url);
-      chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        if (tabs[0]) {
-          chrome.tabs.update(tabs[0].id, {url: request.url});
-        }
-      });
-    }
+    handleProceedToURL(request.url);
+    return false;
   } else if (request.action === 'getTemporaryWhitelist') {
     // Return temporary whitelist for settings display
-    const tempWhitelist = await getTemporaryWhitelist();
-    sendResponse(tempWhitelist);
+    getTemporaryWhitelist().then(sendResponse);
     return true;
   }
 });
+
+async function handleNavigateBack() {
+  // Navigate back or to new tab
+  const tabs = await chrome.tabs.query({active: true, currentWindow: true});
+  if (tabs[0]) {
+    try {
+      // Try to inject script to go back, fallback to new tab if it fails
+      const results = await chrome.scripting.executeScript({
+        target: {tabId: tabs[0].id},
+        func: () => {
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            // If no history, signal to go to new tab
+            return false;
+          }
+          return true;
+        }
+      });
+      // If the script returned false or failed, navigate to new tab
+      if (!results || !results[0] || !results[0].result) {
+        chrome.tabs.update(tabs[0].id, {url: 'chrome://newtab/'});
+      }
+    } catch (error) {
+      // If script injection fails, navigate to new tab
+      chrome.tabs.update(tabs[0].id, {url: 'chrome://newtab/'});
+    }
+  }
+}
+
+async function handleProceedToURL(url) {
+  // Add URL to temporary whitelist and navigate
+  if (url) {
+    await addToTemporaryWhitelist(url);
+    const tabs = await chrome.tabs.query({active: true, currentWindow: true});
+    if (tabs[0]) {
+      chrome.tabs.update(tabs[0].id, {url: url});
+    }
+  }
+}
