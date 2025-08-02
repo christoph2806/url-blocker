@@ -21,7 +21,7 @@ function openSettings() {
 }
 
 function proceedAnyway() {
-  if (blockedURL && confirm('Are you sure you want to visit this blocked site?')) {
+  if (blockedURL && confirm('Are you sure you want to visit this blocked site?\n\nThis will temporarily whitelist the site for 10 minutes.')) {
     chrome.runtime.sendMessage({
       action: 'proceedToURL',
       url: decodeURIComponent(blockedURL)

@@ -32,6 +32,12 @@ chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
 async function checkURL(url) {
   const settings = await chrome.storage.sync.get(['blacklist', 'whitelist']);
   
+  // Check temporary whitelist first
+  const isTemporarilyWhitelisted = await isInTemporaryWhitelist(url);
+  if (isTemporarilyWhitelisted) {
+    return { action: 'allow', reason: 'Temporarily whitelisted' };
+  }
+  
   const blacklistPatterns = parsePatterns(settings.blacklist || '');
   const whitelistPatterns = parsePatterns(settings.whitelist || '');
   
@@ -67,6 +73,61 @@ function matchesAnyPattern(url, patterns) {
       return regex.test(url);
     }
   });
+}
+
+// Temporary whitelist management
+async function addToTemporaryWhitelist(url) {
+  const TEMP_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
+  const expiration = Date.now() + TEMP_DURATION;
+  
+  const result = await chrome.storage.local.get(['tempWhitelist']);
+  const tempWhitelist = result.tempWhitelist || {};
+  
+  tempWhitelist[url] = expiration;
+  await chrome.storage.local.set({ tempWhitelist });
+}
+
+async function isInTemporaryWhitelist(url) {
+  const result = await chrome.storage.local.get(['tempWhitelist']);
+  const tempWhitelist = result.tempWhitelist || {};
+  
+  // Clean up expired entries
+  const now = Date.now();
+  let hasExpired = false;
+  
+  for (const [tempUrl, expiration] of Object.entries(tempWhitelist)) {
+    if (now > expiration) {
+      delete tempWhitelist[tempUrl];
+      hasExpired = true;
+    }
+  }
+  
+  if (hasExpired) {
+    await chrome.storage.local.set({ tempWhitelist });
+  }
+  
+  // Check if URL is in temporary whitelist
+  return tempWhitelist[url] && now < tempWhitelist[url];
+}
+
+async function getTemporaryWhitelist() {
+  const result = await chrome.storage.local.get(['tempWhitelist']);
+  const tempWhitelist = result.tempWhitelist || {};
+  const now = Date.now();
+  
+  // Return only non-expired entries with remaining time
+  const activeEntries = {};
+  for (const [url, expiration] of Object.entries(tempWhitelist)) {
+    if (now < expiration) {
+      activeEntries[url] = {
+        expiration,
+        remainingMs: expiration - now,
+        remainingMinutes: Math.ceil((expiration - now) / 60000)
+      };
+    }
+  }
+  
+  return activeEntries;
 }
 
 function matchesDomainPattern(url, domainPattern) {
@@ -129,13 +190,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // Open extension options page
     chrome.runtime.openOptionsPage();
   } else if (request.action === 'proceedToURL') {
-    // Navigate to the original blocked URL
+    // Add URL to temporary whitelist and navigate
     if (request.url) {
+      await addToTemporaryWhitelist(request.url);
       chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
         if (tabs[0]) {
           chrome.tabs.update(tabs[0].id, {url: request.url});
         }
       });
     }
+  } else if (request.action === 'getTemporaryWhitelist') {
+    // Return temporary whitelist for settings display
+    const tempWhitelist = await getTemporaryWhitelist();
+    sendResponse(tempWhitelist);
+    return true;
   }
 });

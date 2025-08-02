@@ -49,6 +49,27 @@
     .close-btn:hover {
       background: #555 !important;
     }
+    .temp-whitelist {
+      border-left: 4px solid #ff9800;
+    }
+    .temp-entry {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 4px;
+      padding: 8px;
+      margin: 5px 0;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    .temp-url {
+      font-weight: bold;
+      word-break: break-all;
+    }
+    .temp-timer {
+      color: #856404;
+      font-size: 11px;
+      margin-top: 3px;
+    }
     .help {
       font-size: 12px;
       color: #666;
@@ -81,6 +102,15 @@
     <h3>Whitelist (Allow these specific URLs)</h3>
     <textarea id="whitelist" placeholder="Default domains loaded..."></textarea>
     <div class="help">Domain patterns or wildcards. One pattern per line. Includes legitimate domains.</div>
+  </div>
+
+  <div class="section temp-whitelist">
+    <h3>Temporary Whitelist (10 minutes)</h3>
+    <div id="temp-whitelist-container">
+      <div id="temp-whitelist-empty" class="help">No temporarily whitelisted sites</div>
+      <div id="temp-whitelist-list"></div>
+    </div>
+    <div class="help">Sites temporarily allowed via "Proceed Anyway" button</div>
   </div>
   
   <div style="display: flex; gap: 10px; justify-content: center;">

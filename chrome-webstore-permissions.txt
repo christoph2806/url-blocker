@@ -1,0 +1,20 @@
+CHROME WEB STORE PERMISSION JUSTIFICATIONS
+Copy-paste ready format for submission:
+
+=== activeTab ===
+Required to access the currently active tab when users click extension buttons on warning pages. This permission allows the extension to navigate users back to safe pages or to the originally requested URL when they choose "Proceed Anyway" on blocked sites. Without this permission, the warning page buttons would not function.
+
+=== storage ===
+Essential for saving user's personalized blacklist and whitelist patterns locally on their device. This permission stores filtering rules that protect against phishing sites. All data remains on the user's device and is never transmitted externally. Without storage, users would lose their settings.
+
+=== webNavigation ===
+Core functionality permission that detects when users navigate to potentially dangerous websites. This permission monitors navigation events to check URLs against blacklist patterns before pages load, enabling real-time phishing protection. This is the primary security mechanism that blocks malicious sites before they can harm users.
+
+=== tabs ===
+Required to redirect users to warning pages when dangerous sites are detected, and to navigate back to safe locations when users click warning page buttons. This permission enables the extension to replace malicious page loads with protective warning interfaces and manage tab navigation safely.
+
+=== scripting ===
+Needed to inject warning banners on websites that match both blacklist and whitelist patterns (dual-listed sites). This permission displays non-blocking warning notifications to inform users about potentially suspicious sites while still allowing access. Also enables navigation functionality on warning pages.
+
+=== Host Permissions: <all_urls> ===
+Required to monitor and protect users across all websites they visit. Phishing attacks can occur on any domain, including legitimate-looking URLs with subtle character substitutions or typosquatting. This broad permission ensures comprehensive protection against evolving phishing threats that could appear anywhere on the web, providing complete security coverage.

@@ -1,0 +1,16 @@
+UNIQUE PURPOSE - SHORT VERSION
+For Chrome Web Store submission (if character limit required):
+
+=== Unique Purpose (Concise) ===
+
+URL Block offers intelligent three-mode phishing protection (Block/Warn/Allow) with smart pattern matching that distinguishes between malicious sites and legitimate subdomains. 
+
+Unlike basic blockers, it features:
+- Domain-aware filtering (blocks fakezoom.us, allows subdomain.zoom.us)
+- Dual-list system providing contextual warnings instead of binary blocking
+- Pre-configured protection against modern threats (character substitution, typosquatting, Unicode attacks)
+- Non-blocking warnings for sites on both lists, enabling informed user decisions
+
+This targeted approach provides nuanced security decisions rather than absolute allow/deny, specifically designed for evolving phishing techniques that traditional blockers miss.
+
+Characters: 678

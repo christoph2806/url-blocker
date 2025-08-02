@@ -1,0 +1,26 @@
+UNIQUE PURPOSE DESCRIPTION
+For Chrome Web Store submission:
+
+=== Unique Purpose ===
+
+URL Block provides intelligent phishing protection through a sophisticated dual-filtering system that goes beyond simple blocklists. Unlike generic ad blockers or basic URL filters, this extension features:
+
+**Three-Mode Protection System:**
+- BLOCK: Dangerous sites are completely blocked
+- WARN: Suspicious sites show warnings but allow access
+- ALLOW: Safe sites load normally
+
+**Smart Pattern Matching:**
+- Domain-aware filtering (zoom.us blocks fakezoom.us but allows subdomain.zoom.us)
+- Wildcard patterns for flexible threat detection
+- Pre-configured protection against character substitution, typosquatting, and Unicode attacks
+
+**Dual-List Intelligence:**
+Sites appearing on both blacklist and whitelist trigger non-blocking warnings instead of complete blocks, allowing users to make informed decisions about potentially legitimate but flagged sites.
+
+**Focus on Evolving Threats:**
+Specifically targets modern phishing techniques including Cyrillic character substitution (gооgle.com), number substitution (g00gle.com), and domain typosquatting (zooom.us) that traditional blockers miss.
+
+This targeted approach provides more nuanced protection than binary allow/deny systems, making security decisions contextual rather than absolute.
+
+Characters: 1,247

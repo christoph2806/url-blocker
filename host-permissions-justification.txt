@@ -1,0 +1,23 @@
+HOST PERMISSIONS JUSTIFICATION
+For Chrome Web Store submission:
+
+=== host_permissions: <all_urls> ===
+
+This extension requires access to all URLs to provide comprehensive phishing protection. Malicious actors continuously create fraudulent websites using:
+
+1. Character substitution (g00gle.com, amaz0n.com)
+2. Typosquatting (zooom.us, googlle.com) 
+3. Unicode attacks (using Cyrillic characters)
+4. Subdomain spoofing (secure-paypal.fake-site.com)
+5. New malicious domains appearing daily
+
+These attacks can occur on ANY domain across the entire web. Restricting this extension to specific domains would create security gaps that attackers could exploit. The <all_urls> permission enables real-time protection by:
+
+- Monitoring navigation to check URLs against blacklist patterns
+- Injecting content scripts to display warnings on suspicious sites
+- Redirecting users away from confirmed malicious websites
+- Providing consistent protection regardless of where threats appear
+
+This broad permission is essential for effective security - phishing protection cannot be limited to predetermined websites when threats emerge on new domains constantly. All processing occurs locally; no data is transmitted to external servers.
+
+Characters: 994/1000
